@@ -1,0 +1,6 @@
+﻿{
+  "SiteUrl": "https://www.saucedemo.com",
+  "ApiBaseUrl": "http://localhost:40443",
+  "DbConnection": "Server=localhost;Database=MyLibraryDb;Trusted_Connection=True;",
+  "Environment": "local"
+}

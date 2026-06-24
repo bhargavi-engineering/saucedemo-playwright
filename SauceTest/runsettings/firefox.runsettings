@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<Playwright>
+		<BrowserName>firefox</BrowserName>
+		<LaunchOptions>
+			<Headless>false</Headless>
+			<SlowMo>0</SlowMo>
+		</LaunchOptions>
+	</Playwright>
+	<TestRunParameters>
+		<Parameter name="Environment" value="local" />
+	</TestRunParameters>
+</RunSettings>
