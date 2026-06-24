@@ -9,9 +9,12 @@ public static class ConfigurationHelper
     {
         if (_config != null) return _config;
 
-        // Read environment from TestRunParameters
-        // Falls back to "local" if not specified
-        var environment = TestContext.Parameters["Environment"] ?? "local".ToLower();
+        // Check environment variable first, fall back to TestRunParameters, then default to "local"
+        var environment = (
+                            Environment.GetEnvironmentVariable("TEST_ENVIRONMENT") ??
+                            TestContext.Parameters["Environment"] ??
+                            "local"
+                          ).ToLower();
         TestContext.Out.WriteLine($"Running tests against environment: {environment}");
 
         var configFile = Path.Combine(

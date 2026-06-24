@@ -155,7 +155,7 @@ dotnet test --filter "ClassName=CheckoutTests"
 ### Run a specific test method
 
 ```bash
-dotnet test --filter "FullyQualifiedName~CheckoutTest"
+dotnet test --filter "FullyQualifiedName~CheckoutTest_SingleRandomItem"
 ```
 
 ---
