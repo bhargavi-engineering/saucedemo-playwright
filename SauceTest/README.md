@@ -2,6 +2,7 @@
 
 An end-to-end UI test automation framework for [SauceDemo](https://www.saucedemo.com), built with Playwright .NET and NUnit. Implements the Page Object Model (POM) pattern with full cross-browser support, trace capture on failure, and a clean separation between test infrastructure and test logic.
 
+
 ---
 
 ## Features
@@ -10,7 +11,8 @@ An end-to-end UI test automation framework for [SauceDemo](https://www.saucedemo
 - Cross-browser support — Chromium, Firefox, and WebKit via `.runsettings` files
 - Automatic trace capture on test failure (screenshots, snapshots, and sources)
 - `BaseTest` handles all browser lifecycle, tracing setup, and teardown
-- Multi-environment support — pass environment name via CLI or CI/CD to switch config automatically
+- Multi-environment support — set `TEST_ENVIRONMENT` variable to switch config automatically
+- Magic-string free — all constants centralised in `TestConstants`
 - Separate `Models` for strongly-typed test data
 - `RestApiTests` folder ready for API-level test coverage
 - Global usings to keep test files clean
@@ -60,7 +62,7 @@ SauceTest/
 │       ├── BaseTest.cs            # Browser setup, environment config, tracing, and teardown
 │       └── CheckoutTests.cs       # End-to-end checkout test suite
 ├── Utilities/
-│   └── ConfigurationHelper.cs     # Singleton — reads environment, loads matching config JSON
+│   ├── ConfigurationHelper.cs     # Singleton — reads environment, loads matching config JSON
 ├── GlobalUsings.cs                # Global using statements
 └── README.md
 ```
@@ -116,15 +118,13 @@ pwsh bin/Debug/net8.0/playwright.ps1 install
 
 ## Running the tests
 
-### Run all tests (default browser)
+### Run all tests (default browser, local environment)
 
 ```bash
-dotnet test
+dotnet test --settings:runsettings/chromium.runsettings
 ```
 
 ### Run tests on a specific browser
-
-Use the `.runsettings` files to target a specific browser engine:
 
 ```bash
 # Chromium (Chrome / Edge)
@@ -172,7 +172,19 @@ dotnet test --filter "FullyQualifiedName~CheckoutTest_SingleRandomItem"
 
 ## Environment configuration
 
-Tests support multiple environments driven by a single `Environment` parameter. Based on the value passed, `ConfigurationHelper` automatically loads the matching JSON config file from the `TestConfig/` folder.
+Tests support multiple environments controlled by a `TEST_ENVIRONMENT` environment variable. `ConfigurationHelper` reads this variable, normalizes the casing, and automatically loads the matching JSON config file from `TestConfig/`. 
+### How it resolves the environment
+
+```
+1. TEST_ENVIRONMENT environment variable set?
+   → use it  (set from CLI or CI/CD pipeline)
+        ↓ not set
+2. Environment parameter in .runsettings file?
+   → use it  (default baked into the file)
+        ↓ not set
+3. Neither found?
+   → default to "local"
+```
 
 ### Config files
 
@@ -191,37 +203,34 @@ Each config file contains:
 }
 ```
 
-### Passing environment via CLI
+### Setting the environment via CLI
 
-```bash
-# Local (default — uses config.local.json)
+**PowerShell:**
+```powershell
+$env:TEST_ENVIRONMENT="staging"
 dotnet test --settings:runsettings/chromium.runsettings
-
-# Staging — override environment at runtime
-dotnet test --settings:runsettings/chromium.runsettings \
-  -- TestRunParameters.Parameter.Environment=staging
-
-
 ```
 
-### Passing environment via CI/CD
+**Command Prompt:**
+```cmd
+set TEST_ENVIRONMENT=staging
+dotnet test --settings:runsettings/chromium.runsettings
+```
+
+### Setting the environment via CI/CD
 
 **GitHub Actions:**
 ```yaml
 - name: Run Tests
-  run: |
-    dotnet test --settings:runsettings/chromium.runsettings \
-    -- TestRunParameters.Parameter.Environment=${{ vars.TEST_ENVIRONMENT }}
+  env:
+    TEST_ENVIRONMENT: staging
+  run: dotnet test --settings:runsettings/chromium.runsettings
 ```
-
-
-> **Security note:** Never commit `config.staging.json` or `config.production.json` with real credentials. Add them to `.gitignore` and inject sensitive values via CI/CD secrets.
-
 ---
 
 ## Browser configuration
 
-Browser settings are controlled via `.runsettings` files in the `runsettings/` folder. Example `chromium.runsettings`:
+Browser settings are controlled via `.runsettings` files in the `runsettings/` folder. The `<TestRunParameters>` block sets the default environment for that file:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -233,6 +242,9 @@ Browser settings are controlled via `.runsettings` files in the `runsettings/` f
       <SlowMo>0</SlowMo>
     </LaunchOptions>
   </Playwright>
+  <TestRunParameters>
+    <Parameter name="Environment" value="local" />
+  </TestRunParameters>
 </RunSettings>
 ```
 
@@ -241,8 +253,7 @@ Browser settings are controlled via `.runsettings` files in the `runsettings/` f
 | `BrowserName` | `chromium`, `firefox`, or `webkit` |
 | `Headless` | `true` to run without UI (for CI), `false` to see the browser |
 | `SlowMo` | Milliseconds to slow down each action (useful for debugging) |
-
----
+| `Environment` | Default environment if `TEST_ENVIRONMENT` variable is not set |
 
 ## Trace viewer
 
@@ -250,6 +261,12 @@ On test failure, a Playwright trace is automatically saved to:
 
 ```
 bin/Debug/net8.0/playwright-traces/
+```
+
+Filenames include the test class, test name, and a timestamp to prevent overwrites:
+
+```
+SauceTest.Tests.CheckoutTests.CheckoutTest_standard_user__2026-06-27_14-35-22.zip
 ```
 
 The trace file includes screenshots, DOM snapshots, and source code at every step.
@@ -287,6 +304,7 @@ BasePage                    — Page title, hamburger menu, logout
 
 - [x] Multi-environment support via `ConfigurationHelper` and `TestConfig` JSON files
 - [x] Trace capture on test failure with sanitized filenames and timestamps
+- [x] Magic-string free codebase via `TestConstants`
 - [ ] Complete `RestApiTests` for the Library API backend
 - [ ] Add tests for all SauceDemo user types (`locked_out_user`, `problem_user`, etc.)
 - [ ] Integrate with GitHub Actions CI/CD pipeline

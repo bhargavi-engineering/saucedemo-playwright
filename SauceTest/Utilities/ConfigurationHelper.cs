@@ -14,7 +14,7 @@ public static class ConfigurationHelper
                             Environment.GetEnvironmentVariable("TEST_ENVIRONMENT") ??
                             TestContext.Parameters["Environment"] ??
                             "local"
-                          ).ToLower();
+                          ).Trim().ToLowerInvariant();
         TestContext.Out.WriteLine($"Running tests against environment: {environment}");
 
         var configFile = Path.Combine(
