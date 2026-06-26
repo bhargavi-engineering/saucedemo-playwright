@@ -4,7 +4,10 @@ namespace SauceTest.Pages
 {
     public class LoginPage: BasePage
     {        
-        public LoginPage(IPage page):base(page) { }
+        public LoginPage(IPage page):base(page) 
+        { 
+            this.WaitForPageLoadAsync().ConfigureAwait(false);
+        }
 
         #region Locators
         private const string userNameSelector = "[data-test=\"username\"]";
@@ -40,9 +43,7 @@ namespace SauceTest.Pages
             await EnterPasswordAsync(password);
             await LoginButton.ClickAsync();
 
-            var inventoryPage = new InventoryPage(_page); 
-            await inventoryPage.WaitForPageLoadAsync();
-            return inventoryPage; 
+            return new InventoryPage(_page); 
         }
 
         #endregion

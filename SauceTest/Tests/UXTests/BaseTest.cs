@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SauceTest.Pages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,6 @@ namespace SauceTest.Tests.UXTests
 
             //Navigate to site
             await Page.GotoAsync(Config.SiteUrl);
-
         }
 
         [TearDown]

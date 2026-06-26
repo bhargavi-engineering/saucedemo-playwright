@@ -1,6 +1,6 @@
 ﻿# SauceTest — Playwright UI Test Automation
 
-An end-to-end UI test automation framework for [SauceDemo](https://www.saucedemo.com), built with Playwright .NET and NUnit. Implements the Page Object Model (POM) pattern with full cross-browser support, trace capture on failure, and a clean separation between test infrastructure and test logic.
+An end-to-end UI test automation framework for [SauceDemo](https://www.saucedemo.com), built with Playwright, .NET and NUnit. Implements the Page Object Model (POM) pattern with full cross-browser support, trace capture on failure, and a clean separation between test infrastructure and test logic.
 
 
 ---
@@ -12,10 +12,8 @@ An end-to-end UI test automation framework for [SauceDemo](https://www.saucedemo
 - Automatic trace capture on test failure (screenshots, snapshots, and sources)
 - `BaseTest` handles all browser lifecycle, tracing setup, and teardown
 - Multi-environment support — set `TEST_ENVIRONMENT` variable to switch config automatically
-- Magic-string free — all constants centralised in `TestConstants`
 - Separate `Models` for strongly-typed test data
 - `RestApiTests` folder ready for API-level test coverage
-- Global usings to keep test files clean
 
 ---
 
@@ -301,13 +299,6 @@ BasePage                    — Page title, hamburger menu, logout
 ---
 
 ## Roadmap
-
-- [x] Multi-environment support via `ConfigurationHelper` and `TestConfig` JSON files
-- [x] Trace capture on test failure with sanitized filenames and timestamps
-- [x] Magic-string free codebase via `TestConstants`
-- [ ] Complete `RestApiTests` for the Library API backend
-- [ ] Add tests for all SauceDemo user types (`locked_out_user`, `problem_user`, etc.)
-- [ ] Integrate with GitHub Actions CI/CD pipeline
 - [ ] Add test reporting (Allure or ExtentReports)
 - [ ] Add visual regression tests
 

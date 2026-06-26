@@ -10,7 +10,10 @@ namespace SauceTest.Pages
 {
     public class ShoppingCartPage : BasePage
     {
-        public ShoppingCartPage(IPage page) : base(page) { }
+        public ShoppingCartPage(IPage page) : base(page)
+        {
+            this.WaitForPageLoadAsync().ConfigureAwait(false);
+        }
 
         #region Properties
         public new string TitleText => titleTextSelector; 
@@ -51,20 +54,13 @@ namespace SauceTest.Pages
         public async Task<InventoryPage> ContinueShoppingAsync()
         {
             await ClickContinueAsync();
-
-            var inventoryPage = new InventoryPage(_page);
-            await inventoryPage.WaitForPageLoadAsync();
-            return inventoryPage; 
-
+            return new InventoryPage(_page);
         }
 
         public async Task<CheckoutInformationPage> CheckoutAsync()
         {
             await ClickCheckoutAsync();
-
-            var checkoutInfoPage = new CheckoutInformationPage(_page);
-            await checkoutInfoPage.WaitForPageLoadAsync();
-            return checkoutInfoPage;
+            return new CheckoutInformationPage(_page);
         }
 
         

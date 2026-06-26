@@ -10,7 +10,10 @@ namespace SauceTest.Pages
 {
     public class CheckoutOverviewPage: BasePage
     {
-        public CheckoutOverviewPage(IPage page): base(page) { }
+        public CheckoutOverviewPage(IPage page): base(page)
+        {
+            this.WaitForPageLoadAsync().ConfigureAwait(false);
+        }
 
         #region Locators
         private const string titleTextSelector = "Checkout: Overview"; 

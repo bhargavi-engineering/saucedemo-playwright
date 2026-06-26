@@ -11,10 +11,13 @@ namespace SauceTest.Pages
 {
     public class InventoryPage: BasePage
     {
-        public InventoryPage(IPage page): base(page) { }
+        public InventoryPage(IPage page): base(page)
+        {
+            this.WaitForPageLoadAsync().ConfigureAwait(false);
+        }
 
         #region Properties
-        
+
         #endregion
 
         #region Locators
@@ -24,7 +27,7 @@ namespace SauceTest.Pages
         private const string inventoryItemDescSelector = "[data-test=\"inventory-item-desc\"]";
         private const string inventoryItemPriceSelector = "[data-test=\"inventory-item-price\"]";
         private const string addToCartButtonNameSelector = "Add to cart";
-
+        public string ProductsText { get; } = "Products"; 
         public ILocator ProductsTitleText => _page.GetByText(titleTextSelector);
         public ILocator InventoryItemsDiv => _page.Locator(inventoryItemsSelector);
         public ILocator AddToCartButton => _page.GetByRole(AriaRole.Button, 

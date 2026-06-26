@@ -47,10 +47,7 @@ namespace SauceTest.Pages
         {
             await OpenBurgerMenuAsync(); 
             await LogoutLink.ClickAsync();
-
-            var loginPage = new LoginPage(_page);
-            await loginPage.WaitForPageLoadAsync();
-            return loginPage;
+            return new LoginPage(_page);
         }
 
 
@@ -60,10 +57,7 @@ namespace SauceTest.Pages
         public async Task<ShoppingCartPage> GoToShoppingCartAsync()
         {
             await ShoppingCartLink.ClickAsync();
-
-            var shoppingCartPage = new ShoppingCartPage(_page);
-            await shoppingCartPage.WaitForPageLoadAsync();
-            return shoppingCartPage;
+            return new ShoppingCartPage(_page);            
         }
 
         #endregion

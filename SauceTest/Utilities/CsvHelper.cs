@@ -1,18 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using System.Globalization;
+
 
 namespace SauceTest.Utilities
 {
-    public class CsvHelper<T>
+    public class CsvTestCaseSource
     {
-        public string? DataFile { get; set; }    
-        public T? Model { get; set; }    
-        public TestCaseData ReadFile()
+        public static IEnumerable<TestCaseData> GetTestCases(string csvFilePath, Type modelType)
         {
-            return new TestCaseData(); 
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = true,
+                Delimiter =",",
+            };
+
+            using var reader = new StreamReader(csvFilePath);
+            using var csv = new CsvReader(reader, config);
+
+            // Dynamically read records as the specified model type
+            var records = csv.GetRecords(modelType);
+
+            foreach (var record in records)
+            {
+                yield return new TestCaseData(record)
+                    .SetName($"{modelType.Name}_{records}");
+            }
         }
     }
 }
+

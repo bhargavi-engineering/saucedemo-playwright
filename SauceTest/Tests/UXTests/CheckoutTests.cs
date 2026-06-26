@@ -16,6 +16,7 @@ namespace SauceTest.Tests.UXTests
             var inventoryPage = await loginPage.LoginAsync(username, password);
 
             //Add inventory item to cart
+            await Expect(inventoryPage.ProductsTitleText).ToHaveTextAsync(inventoryPage.ProductsText); 
             Assert.That(await inventoryPage.GetNumberOfItemsAsync(), Is.GreaterThanOrEqualTo(1), 
                 "No product items exist on page");
             var item = await inventoryPage.AddToCartInventoryItemAsync(itemNumber);            

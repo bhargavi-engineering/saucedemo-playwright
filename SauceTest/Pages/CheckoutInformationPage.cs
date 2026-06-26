@@ -9,8 +9,11 @@ namespace SauceTest.Pages
 {
     public class CheckoutInformationPage : BasePage
     {
-        public CheckoutInformationPage(IPage page): base(page) { }
-                
+        public CheckoutInformationPage(IPage page): base(page)
+        {
+            this.WaitForPageLoadAsync().ConfigureAwait(false);
+        }
+
         #region Locators
         private const string titleTextSelector = "Checkout: Your Information"; 
         private const string checkoutTitleSelector = "[data-test=\"title\"]";
@@ -52,19 +55,13 @@ namespace SauceTest.Pages
         {
             await FillCheckoutInfoAsync(firstName, lastName, postalCode);
             await ClickContinueAsync();
-
-            var checkoutOverviewPage = new CheckoutOverviewPage(_page);
-            await checkoutOverviewPage.WaitForPageLoadAsync();
-            return checkoutOverviewPage; 
+            return new CheckoutOverviewPage(_page);
         }
 
         public async Task<ShoppingCartPage> CancelCheckoutAsync()
         {
             await ClickCancelAsync();
-
-            var shoppingCartPage = new ShoppingCartPage(_page);
-            await shoppingCartPage.WaitForPageLoadAsync();
-            return shoppingCartPage;
+            return new ShoppingCartPage(_page);
         }
         #endregion
     }
